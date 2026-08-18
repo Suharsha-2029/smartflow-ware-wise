@@ -131,8 +131,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <WarehouseProvider>
+        <Nav />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+          FlowDock · simulated warehouse control tower
+        </footer>
+        <Toaster position="top-right" />
+      </WarehouseProvider>
     </QueryClientProvider>
   );
 }
+
