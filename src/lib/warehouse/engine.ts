@@ -208,19 +208,19 @@ export function reorderRecommendations(products: Product[], orders: WarehouseOrd
 export function buildPickWave(orders: WarehouseOrder[], products: Product[]) {
   const ready = orders.filter((o) => o.stage === "allocated" && o.lines.some((l) => l.allocated > 0));
   const ranked = ready
-    .map((o) => ({ o, prio: priorityOf(o, products) }))
+    .map((o) => ({ order: o, prio: priorityOf(o, products) }))
     .sort((a, b) => b.prio.score - a.prio.score)
     .slice(0, 5);
 
   const zones = new Map<string, number>();
-  for (const { o } of ranked) {
-    for (const l of o.lines) {
+  for (const { order } of ranked) {
+    for (const l of order.lines) {
       const prod = products.find((p) => p.sku === l.sku);
       if (prod && l.allocated > 0) zones.set(prod.zone, (zones.get(prod.zone) ?? 0) + l.allocated);
     }
   }
   const route = [...zones.entries()].sort((a, b) => b[1] - a[1]).map(([z, units]) => ({ zone: z, units }));
-  const stops = ranked.reduce((s, { o }) => s + o.lines.filter((l) => l.allocated > 0).length, 0);
+  const stops = ranked.reduce((s, { order }) => s + order.lines.filter((l) => l.allocated > 0).length, 0);
   return { orders: ranked, route, stops, savedMinutes: Math.max(0, stops * 2 - route.length * 2) };
 }
 
