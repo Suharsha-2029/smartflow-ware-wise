@@ -46,7 +46,7 @@ export interface WarehouseOrder {
   lines: OrderLine[];
   stage: OrderStage;
   assignee: string | null;
-  holdReason?: string;
+  holdReason?: string | undefined;
   stageEnteredAt: number;
 }
 

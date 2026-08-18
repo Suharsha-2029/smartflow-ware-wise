@@ -78,12 +78,12 @@ export function WarehouseProvider({ children }: { children: ReactNode }) {
           if (o.id !== orderId) return o;
           const idx = STAGE_FLOW.indexOf(o.stage);
           if (idx < 0 || idx === STAGE_FLOW.length - 1) return o;
-          const next = STAGE_FLOW[idx + 1];
+          const next = STAGE_FLOW[idx + 1]!;
           if (next === "picking" && !o.lines.some((l) => l.allocated > 0)) {
             toast.error(`${o.id} has no allocated stock`, { description: "Run allocation or raise a PO first." });
             return o;
           }
-          const assignee = next === "picking" ? PICKERS[Math.floor(Math.random() * PICKERS.length)] : o.assignee;
+          const assignee = next === "picking" ? PICKERS[Math.floor(Math.random() * PICKERS.length)]! : o.assignee;
           const lines = next === "packing" ? o.lines.map((l) => ({ ...l, picked: l.allocated })) : o.lines;
 
           if (next === "dispatched") {
@@ -204,7 +204,7 @@ export function WarehouseProvider({ children }: { children: ReactNode }) {
   );
 
   const injectOrder = useCallback(() => {
-    const [customer, tier, channel] = CUSTOMER_POOL[Math.floor(Math.random() * CUSTOMER_POOL.length)];
+    const [customer, tier, channel] = CUSTOMER_POOL[Math.floor(Math.random() * CUSTOMER_POOL.length)]!;
     const picks = SEED_PRODUCTS.slice()
       .sort(() => Math.random() - 0.5)
       .slice(0, 1 + Math.floor(Math.random() * 2));
